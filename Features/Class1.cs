@@ -19,14 +19,24 @@ namespace NUnitTestSpecFlow.Features
         [Test]
         public  void myTest()
         {
-            IRestClient client = new RestClient();
-            IRestRequest request = new RestRequest(geturl).AddQueryParameter("lang","en_US").AddQueryParameter("currency", "USD").AddHeader("x-rapidapi-host","tripadvisor1.p.rapidapi.com").AddHeader("x-rapidapi-key", "3e1b2b68d1msh65cbdf6a738bd92p1f119cjsn2d12e5e2fb9d");
-            IRestResponse response = client.Get(request);
-          
-                Console.WriteLine("status code " + response.StatusCode);
-                Console.WriteLine("status code " + response.Content);
-      
-         }
+            var client = new RestClient();
+            var request = new RestRequest(geturl).AddQueryParameter("lang","en_US").AddQueryParameter("currency", "USD").AddHeader("x-rapidapi-host","tripadvisor1.p.rapidapi.com").AddHeader("x-rapidapi-key", "3e1b2b68d1msh65cbdf6a738bd92p1f119cjsn2d12e5e2fb9d");
+            var response = client.Execute(request);
+
+            var deserial = new JsonDeserializer();
+            var output = deserial.Deserialize<Dictionary<string, string>>(response);
+            // using split function results in a string array of data , filters , pagination
+            var datanode = output["data"].Split(',')[0];
+            // within the data array split by using {
+            var firstLocation = datanode.Split('{')[1];
+            var myString = firstLocation.Split('"');
+            Console.WriteLine(myString[1]);
+            Console.WriteLine(myString[3]);
+
+
+
+
+        }
     }
 
 }
